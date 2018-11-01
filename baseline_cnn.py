@@ -63,27 +63,27 @@ class BasicCNN(nn.Module):
         # the necessary value based on the provided specs for each layer
 
         #TODO: conv2: X input channels, 10 output channels, [8x8] kernel
-        self.conv2 = nn.Conv2d(__, __, __)
-        self.conv2_normed = nn.BatchNorm2d(__)
-        torch_init.xavier_normal_(_______)
+        self.conv2 = nn.Conv2d(in_channels=12, out_channels=10, kernel_size=8)
+        self.conv2_normed = nn.BatchNorm2d(10)
+        torch_init.xavier_normal_(self.conv2.weight)
 
         #TODO: conv3: X input channels, 8 output channels, [6x6] kernel
-        self.conv3 = nn.Conv2d(__, __, __)
-        self.conv3_normed = nn.BatchNorm2d(__)
-        torch_init.xavier_normal_(_______)
+        self.conv3 = nn.Conv2d(in_channels=10, out_channels=8, kernel_size=6)
+        self.conv3_normed = nn.BatchNorm2d(8)
+        torch_init.xavier_normal_(self.conv3.weight)
 
         #TODO: Apply max-pooling with a [3x3] kernel using tiling (*NO SLIDING WINDOW*)
-        self.pool = nn.MaxPool2d(kernel_size=3, stride=__)
+        self.pool = nn.MaxPool2d(kernel_size=3, stride=3)
 
         # Define 2 fully connected layers:
         #TODO: Use the value you computed in Part 1, Question 4 for fc1's in_features
-        self.fc1 = nn.Linear(in_features=__, out_features=128)
-        self.fc1_normed = nn.BatchNorm1d(__)
-        torch_init.xavier_normal_(_______)
+        self.fc1 = nn.Linear(in_features=164, out_features=128)
+        self.fc1_normed = nn.BatchNorm1d(128)
+        torch_init.xavier_normal_(self.fc1.weight)
 
         #TODO: Output layer: what should out_features be?
-        self.fc2 = nn.Linear(in_features=__, out_features=__).cuda()
-        torch_init.xavier_normal_(_______)
+        self.fc2 = nn.Linear(in_features=128, out_features=14)  # TODO put back cuda?
+        torch_init.xavier_normal_(self.fc2.weight)
 
 
 
@@ -108,8 +108,8 @@ class BasicCNN(nn.Module):
         batch = func.relu(self.conv1_normed(self.conv1(batch)))
         
         # Apply conv2 and conv3 similarly
-        batch = _______ #func.relu(self.conv2_normed(self.conv2(batch)))
-        batch = _______ #func.relu(self.conv3_normed(self.conv3(batch)))
+        batch = func.relu(self.conv2_normed(self.conv2(batch)))
+        batch = func.relu(self.conv3_normed(self.conv3(batch)))
         
         # Pass the output of conv3 to the pooling layer
         batch = self.pool(batch)
@@ -118,15 +118,15 @@ class BasicCNN(nn.Module):
         batch = batch.view(-1, self.num_flat_features(batch))
         
         # Connect the reshaped features of the pooled conv3 to fc1
-        batch = _______ #func.relu(self.fc1(batch))
+        batch = func.relu(self.fc1(batch))
         
         # Connect fc1 to fc2 - this layer is slightly different than the rest (why?)
-        batch = _______ # self.fc2(batch)
+        batch = self.fc2(batch)
 
 
         # Return the class predictions
         #TODO: apply an activition function to 'batch'
-        return _______ # func.sigmoid(batch)
+        return func.sigmoid(batch)
     
     
 
