@@ -77,7 +77,7 @@ class BasicCNN(nn.Module):
 
         # Define 2 fully connected layers:
         #TODO: Use the value you computed in Part 1, Question 4 for fc1's in_features
-        self.fc1 = nn.Linear(in_features=164, out_features=128)
+        self.fc1 = nn.Linear(in_features=215168, out_features=128)
         self.fc1_normed = nn.BatchNorm1d(128)
         torch_init.xavier_normal_(self.fc1.weight)
 
@@ -105,28 +105,57 @@ class BasicCNN(nn.Module):
         
         # Apply first convolution, followed by ReLU non-linearity; 
         # use batch-normalization on its outputs
-        batch = func.relu(self.conv1_normed(self.conv1(batch)))
-        
+        # with torch.no_grad():
+        batch = self.conv1(batch)
+        print("conv1")  
+        print(batch.size())
+        batch = self.conv1_normed(batch)
+        print("conv1")
+        print(batch.size())
+        batch = func.relu(batch)
+        print("conv1")
+        print(batch.size())
+
         # Apply conv2 and conv3 similarly
-        batch = func.relu(self.conv2_normed(self.conv2(batch)))
-        batch = func.relu(self.conv3_normed(self.conv3(batch)))
-        
+        batch = self.conv2(batch)
+        print("conv2")
+        print(batch.size())
+        batch = self.conv2_normed(batch)
+        print("conv2")
+        print(batch.size())
+        batch = func.relu(batch)
+        print("conv2")
+        print(batch.size())
+
+        batch = self.conv3(batch)
+        print("conv3")
+        print(batch.size())
+        batch = self.conv3_normed(batch)
+        print("conv3")
+        print(batch.size())
+        batch = func.relu(batch)
+        print("conv3")
+        print(batch.size())
+
         # Pass the output of conv3 to the pooling layer
         batch = self.pool(batch)
+        print("pool")
+        print(batch.size())
 
         # Reshape the output of the conv3 to pass to fully-connected layer
         batch = batch.view(-1, self.num_flat_features(batch))
-        
+            
+
         # Connect the reshaped features of the pooled conv3 to fc1
         batch = func.relu(self.fc1(batch))
-        
+
         # Connect fc1 to fc2 - this layer is slightly different than the rest (why?)
         batch = self.fc2(batch)
-
+        
 
         # Return the class predictions
         #TODO: apply an activition function to 'batch'
-        return func.sigmoid(batch)
+        return func.sigmoid(batch)#.to(torch.long)
     
     
 
