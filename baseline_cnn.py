@@ -82,7 +82,7 @@ class BasicCNN(nn.Module):
         torch_init.xavier_normal_(self.fc1.weight)
 
         #TODO: Output layer: what should out_features be?
-        self.fc2 = nn.Linear(in_features=128, out_features=14)  # TODO put back cuda?
+        self.fc2 = nn.Linear(in_features=128, out_features=14)
         torch_init.xavier_normal_(self.fc2.weight)
 
 
@@ -106,41 +106,15 @@ class BasicCNN(nn.Module):
         # Apply first convolution, followed by ReLU non-linearity; 
         # use batch-normalization on its outputs
         # with torch.no_grad():
-        batch = self.conv1(batch)
-        print("conv1")  
-        print(batch.size())
-        batch = self.conv1_normed(batch)
-        print("conv1")
-        print(batch.size())
-        batch = func.relu(batch)
-        print("conv1")
-        print(batch.size())
+        batch = func.relu(self.conv1_normed(self.conv1(batch)))
 
         # Apply conv2 and conv3 similarly
-        batch = self.conv2(batch)
-        print("conv2")
-        print(batch.size())
-        batch = self.conv2_normed(batch)
-        print("conv2")
-        print(batch.size())
-        batch = func.relu(batch)
-        print("conv2")
-        print(batch.size())
+        batch = func.relu(self.conv2_normed(self.conv2(batch)))
 
-        batch = self.conv3(batch)
-        print("conv3")
-        print(batch.size())
-        batch = self.conv3_normed(batch)
-        print("conv3")
-        print(batch.size())
-        batch = func.relu(batch)
-        print("conv3")
-        print(batch.size())
+        batch = func.relu(self.conv3_normed(self.conv3(batch)))
 
         # Pass the output of conv3 to the pooling layer
         batch = self.pool(batch)
-        print("pool")
-        print(batch.size())
 
         # Reshape the output of the conv3 to pass to fully-connected layer
         batch = batch.view(-1, self.num_flat_features(batch))
