@@ -9,12 +9,12 @@ def accuracy(outputs, targets):
     """
     Computes the per class accuracy of two 2d tensors.
     :param outputs: 2D Tensor of outputs
-    :param targets: 2D Tensor of targets TODO think about how it will work with indices of classes.
+    :param targets: 2D Tensor of targets
     :return: 1D Tensor of accuracies.
     """
 
     # transpose to align classes
-    tout = torch.t(outputs)
+    tout = torch.t(get_predictions(outputs))
     ttar = torch.t(targets)
 
     samples = len(tout[0])
@@ -28,6 +28,7 @@ def accuracy(outputs, targets):
 
     return temp
 
+
 def precision(outputs, targets):
     """
     Compute the per class precision given by TP / TP + FP
@@ -35,9 +36,9 @@ def precision(outputs, targets):
     :param targets:
     :return:
     """
-
+    eps = 0.0000000000000000001
     # find where the true positives are
-    true = outputs.t() + targets.t()
+    true = get_predictions(outputs).t() + targets.t()
     # find how many there are.
     true = torch.sum(torch.eq(true, 2), 1).to(torch.float)
 
@@ -46,7 +47,7 @@ def precision(outputs, targets):
     # filter out false negatives and count
     false = torch.sum(torch.eq(false, 1), 1).to(torch.float)
 
-    sum = true + false
+    sum = true + false + eps
 
     prec = torch.div(true, sum)
 
@@ -60,9 +61,9 @@ def recall(outputs, targets):
     :param targets:
     :return:
     """
-
+    eps = 0.0000000000000000001
     # find where the true positives are
-    true = outputs.t() + targets.t()
+    true = get_predictions(outputs).t() + targets.t()
     # find how many there are.
     true = torch.sum(torch.eq(true, 2), 1).to(torch.float)
 
@@ -71,7 +72,7 @@ def recall(outputs, targets):
     # filter out false positives and count
     false = torch.sum(torch.eq(false, 1), -1).to(torch.float)
 
-    sum = true + false
+    sum = true + false + eps
 
     rec = torch.div(true, sum)
 
@@ -81,4 +82,3 @@ def recall(outputs, targets):
 def bcr(outputs, targets):
     temp = torch.div(precision(outputs, targets) + recall(outputs, targets), 2)
     return temp
-
