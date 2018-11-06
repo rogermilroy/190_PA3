@@ -112,38 +112,55 @@ for epoch in range(num_epochs):
     print("Finished", epoch + 1, "epochs of training")
     
     # validation
-    val_images, val_labels = next(iter(val_loader))
-    val_images, val_labels = val_images.to(computing_device), val_labels.to(computing_device)
-    val_out = model(val_images)
-    
-    val_loss = criterion(val_out, val_labels)
-    
-    if val_loss < current_best_val:
-        current_best_val = val_loss
+    accuracy, precision, recall, bcr = None, None, None, None
+    total_val_loss = 0.0
+    for i, (val_images, val_labels) in enumerate(val_loader):
+
+        val_images, val_labels = val_images.to(computing_device), val_labels.to(computing_device)
+        val_out = model(val_images)
+
+        val_loss = criterion(val_out, val_labels)
+        total_val_loss += float(val_loss)
+        if i == 0:
+            accuracy = torch.zeros_like(val_labels[0], dtype=torch.float)
+            precision = torch.zeros_like(val_labels[0], dtype=torch.float)
+            recall = torch.zeros_like(val_labels[0], dtype=torch.float)
+            bcr = torch.zeros_like(val_labels[0], dtype=torch.float)
+        accuracy += testing.accuracy(val_out, val_labels)
+        precision += testing.precision(val_out, val_labels)
+        recall += testing.recall(val_out, val_labels)
+        bcr += testing.bcr(val_out, val_labels)
+
+    if total_val_loss < current_best_val:
+        current_best_val = total_val_loss
         increasing_epochs = 0
     else:
-        increasing_epochs +=1
+        increasing_epochs += 1
     if increasing_epochs > early_stop_epochs:
         break
 
-    accuracy = testing.accuracy(val_out, val_labels)
-    precision = testing.precision(val_out, val_labels)
-    recall = testing.recall(val_out, val_labels)
-    bcr = testing.bcr(val_out, val_labels)
-    print(val_loss, accuracy, precision, recall, bcr)
-    del val_images, val_labels
+    avg_val_loss = total_val_loss / float(i)
+    accuracy /= float(i)
+    precision /= float(i)
+    recall /= float(i)
+    bcr /= float(i)
+
+    print(total_val_loss, avg_val_loss, accuracy, precision, recall, bcr)
     
 print("Training complete after", epoch, "epochs, with total loss: ", total_loss, " and average "
                                                                                  "minibatch loss "
                                                                                  "of: ", avg_minibatch_loss)
 # test
-test_images, test_labels = next(iter(test_loader))
-test_images, test_labels = test_images.to(computing_device), test_labels.to(computing_device)
-test_out = model(test_images)
+total_test_loss = 0.0
+for j, (test_images, test_labels) in enumerate(test_loader):
+    test_images, test_labels = test_images.to(computing_device), test_labels.to(computing_device)
+    test_out = model(test_images)
 
-test_loss = criterion(test_out, test_labels)
-taccuracy = testing.accuracy(test_out, test_labels)
-tprecision = testing.precision(test_out, test_labels)
-trecall = testing.recall(test_out, test_labels)
-tbcr = testing.bcr(test_out, test_labels)
-print(test_loss, taccuracy, tprecision, trecall, tbcr)
+    test_loss = criterion(test_out, test_labels)
+    total_test_loss += test_loss
+# taccuracy = testing.accuracy(test_out, test_labels)
+# tprecision = testing.precision(test_out, test_labels)
+# trecall = testing.recall(test_out, test_labels)
+# tbcr = testing.bcr(test_out, test_labels)
+# avg_test_loss = total_test_loss/float(j)
+print(total_test_loss)
