@@ -52,7 +52,7 @@ class DeepCNN(nn.Module):
         self.conv1 = nn.Conv2d(in_channels=1, out_channels=24, kernel_size=8, stride=2)
 
         # Add batch-normalization to the outputs of conv1
-        self.conv1_normed = nn.BatchNorm2d(18)
+        self.conv1_normed = nn.BatchNorm2d(24)
 
         # Initialized weights using the Xavier-Normal method
         torch_init.xavier_normal_(self.conv1.weight)
@@ -80,7 +80,7 @@ class DeepCNN(nn.Module):
 
         # Define 2 fully connected layers:
         # TODO: Use the value you computed in Part 1, Question 4 for fc1's in_features
-        self.fc1 = nn.Linear(in_features=215168, out_features=128)
+        self.fc1 = nn.Linear(in_features=8712, out_features=128)
         self.fc1_normed = nn.BatchNorm1d(128)
         torch_init.xavier_normal_(self.fc1.weight)
 
