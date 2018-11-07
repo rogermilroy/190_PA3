@@ -88,12 +88,11 @@ def test(model, computing_device, loader, criterion):
     acc, pr, re, balance = None, None, None, None
     total_val_loss = 0.0
     for i, (val_images, val_labels) in enumerate(loader):
-
         val_images, val_labels = val_images.to(computing_device), val_labels.to(computing_device)
         val_out = model(val_images)
-
         val_loss = criterion(val_out, val_labels)
         total_val_loss += float(val_loss)
+
         if i == 0:
             acc = torch.zeros_like(val_labels[0], dtype=torch.float)
             pr = torch.zeros_like(val_labels[0], dtype=torch.float)
@@ -103,10 +102,11 @@ def test(model, computing_device, loader, criterion):
         pr += precision(val_out, val_labels)
         re += recall(val_out, val_labels)
         balance += bcr(val_out, val_labels)
-        avg_val_loss = total_val_loss / float(i)
-        acc /= float(i)
-        pr /= float(i)
-        re /= float(i)
-        balance /= float(i)
+
+    avg_val_loss = total_val_loss / float(i)
+    acc /= float(i)
+    pr /= float(i)
+    re /= float(i)
+    balance /= float(i)
     return (total_val_loss, avg_val_loss, acc, pr, re, balance)
 
