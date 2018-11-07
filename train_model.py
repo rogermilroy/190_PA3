@@ -33,7 +33,7 @@ use_cuda = torch.cuda.is_available()
 # Setup GPU optimization if CUDA is supported
 if use_cuda:
     computing_device = torch.device("cuda")
-    extras = {"num_workers": 4, "pin_memory": True}
+    extras = {"num_workers": 3, "pin_memory": True}
     print("CUDA is supported")
 else: # Otherwise, train on the CPU
     computing_device = torch.device("cpu")
@@ -110,7 +110,7 @@ for epoch in range(num_epochs):
             N_minibatch_loss = 0.0
 
         # validate every 2 N minibatches.
-        if minibatch_count % (2 * N) == 0:
+        if minibatch_count % (2 * N) == 0 and minibatch_count != 0:
 
             # validation
             total_val_loss, avg_val_loss, accuracy, precision, recall, bcr = testing.test(model,
