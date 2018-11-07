@@ -6,6 +6,7 @@
 
 from baseline_cnn import *
 from baseline_cnn import BasicCNN
+from deep_cnn import DeepCNN
 import torch
 from torchvision import transforms
 from torch import optim
@@ -46,7 +47,7 @@ train_loader, val_loader, test_loader = create_split_loaders(batch_size, seed, t
                                                              extras=extras)
 
 # Instantiate a BasicCNN to run on the GPU or CPU based on CUDA support
-model = BasicCNN()
+model = DeepCNN()
 model = model.to(computing_device)
 print("Model on CUDA?", next(model.parameters()).is_cuda)
 
