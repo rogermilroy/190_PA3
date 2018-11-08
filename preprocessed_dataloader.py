@@ -74,7 +74,7 @@ def processed_split_loaders(no_folds, fold,  batch_size, seed, device, p_test=0.
 
     # TODO verify
     train_set = set(train_ind)
-    val_ind = set(train_ind[(fold-1) * portion: fold * portion])
+    val_ind = set(train_ind[int((fold-1) * portion): int(fold * portion)])
     train_ind = train_set.difference(val_ind)
 
     # Use the SubsetRandomSampler as the iterator for each subset
