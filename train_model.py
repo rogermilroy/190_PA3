@@ -113,7 +113,7 @@ for epoch in range(num_epochs):
         if minibatch_count % (2 * N) == 0 and minibatch_count != 0:
 
             # validation
-            total_val_loss, avg_val_loss, accuracy, precision, recall, bcr = testing.test(model,
+            total_val_loss, avg_val_loss, accuracy, precision, recall, balance = testing.test(model,
                                                                                           computing_device,
                                                                                           val_loader,
                                                                                           criterion)
@@ -126,7 +126,7 @@ for epoch in range(num_epochs):
             if increasing_epochs > early_stop_epochs:
                 break
 
-            print(total_val_loss, avg_val_loss, accuracy, precision, recall, bcr)
+            print(total_val_loss, avg_val_loss, accuracy, precision, recall, balance)
 
     print("Finished", epoch + 1, "epochs of training")
 
