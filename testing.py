@@ -79,13 +79,13 @@ def recall(outputs, targets):
     return rec
 
 
-def bcr(outputs, targets):
+def balance(outputs, targets):
     temp = torch.div(precision(outputs, targets) + recall(outputs, targets), 2)
     return temp
 
 
 def test(model, computing_device, loader, criterion):
-    acc, pr, re, balance = None, None, None, None
+    acc, pr, re, bal = None, None, None, None
     total_val_loss = 0.0
     for i, (val_images, val_labels) in enumerate(loader):
         val_images, val_labels = val_images.to(computing_device), val_labels.to(computing_device)
@@ -97,16 +97,33 @@ def test(model, computing_device, loader, criterion):
             acc = torch.zeros_like(val_labels[0], dtype=torch.float)
             pr = torch.zeros_like(val_labels[0], dtype=torch.float)
             re = torch.zeros_like(val_labels[0], dtype=torch.float)
-            balance = torch.zeros_like(val_labels[0], dtype=torch.float)
+            bal = torch.zeros_like(val_labels[0], dtype=torch.float)
         acc += accuracy(val_out, val_labels)
         pr += precision(val_out, val_labels)
         re += recall(val_out, val_labels)
-        balance += bcr(val_out, val_labels)
+        bal += balance(val_out, val_labels)
 
     avg_val_loss = total_val_loss / float(i)
     acc /= float(i)
     pr /= float(i)
     re /= float(i)
-    balance /= float(i)
-    return (total_val_loss, avg_val_loss, acc, pr, re, balance)
+    bal /= float(i)
+    return (total_val_loss, avg_val_loss, acc, pr, re, bal)
 
+
+def aggregate_precision(outputs, targets):
+    prec = precision(outputs, targets)
+    agg = torch.sum(prec) / len(prec)
+    return agg
+
+
+def aggregate_recall(outputs, targets):
+    rec = recall(outputs, targets)
+    agg = torch.sum(rec) / len(rec)
+    return agg
+
+
+def aggregate_balance(outputs, targets):
+    b = balance(outputs, targets)
+    agg = torch.sum(b) / len(b)
+    return agg
