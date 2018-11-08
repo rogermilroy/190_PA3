@@ -114,16 +114,52 @@ def test(model, computing_device, loader, criterion):
 def aggregate_precision(outputs, targets):
     prec = precision(outputs, targets)
     agg = torch.sum(prec) / len(prec)
-    return agg
+    return agg.item()
 
 
 def aggregate_recall(outputs, targets):
     rec = recall(outputs, targets)
     agg = torch.sum(rec) / len(rec)
-    return agg
+    return agg.item()
 
 
 def aggregate_balance(outputs, targets):
     b = balance(outputs, targets)
     agg = torch.sum(b) / len(b)
-    return agg
+    return agg.item()
+
+
+def sub_matrix(output, target):
+    """
+    Compute confusion matrix for one output, target pair. If target and output are both positive
+    then we count it as correct and add one to the column. Else we distribute the error by
+    dividing by the number of positive indications.
+    :param output:
+    :param target:
+    :return: 2D Tensor of the confusion matrix.
+    """
+    dims = len(target)
+    pos = torch.sum(output)
+    temp = []
+    for i in range(dims):
+        if target[i] == 1.0 and output[i] == 1.0:
+            t = torch.zeros_like(target)
+            t[i] = 1.0
+            temp.append(t)
+        else:
+            t = output / pos
+            temp.append(t)
+    return torch.tensor(temp)
+
+
+def confusion_matrix(outputs, targets):
+    dims = len(targets[0])
+    temp = torch.new_zeros((dims, dims))
+    new = []
+    for i in range(len(targets)):
+        temp += sub_matrix(outputs[i], targets[i])
+    for j in range(temp.size()[0]):
+        row = temp[j]
+        row /= torch.sum(row)
+        new.append(row)
+    return torch.tensor(new)
