@@ -19,7 +19,7 @@ class PreprocessedDataset(Dataset):
         return len(os.listdir(self.image_dir))
 
     def __getitem__(self, item):
-        image_path = os.path.join(self.image_dir, "/image-" + str(item))
+        image_path = self.image_dir + "/image-" + str(item)
 
         image, label = torch.load(image_path, self.device)
 
