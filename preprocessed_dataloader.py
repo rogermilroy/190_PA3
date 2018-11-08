@@ -79,9 +79,9 @@ def processed_split_loaders(no_folds, fold,  batch_size, seed, device='cpu', p_t
     train_ind = train_set - val_ind
 
     # Use the SubsetRandomSampler as the iterator for each subset
-    sample_train = SubsetRandomSampler(train_ind)
+    sample_train = SubsetRandomSampler(list(train_ind))
     sample_test = SubsetRandomSampler(test_ind)
-    sample_val = SubsetRandomSampler(val_ind)
+    sample_val = SubsetRandomSampler(list(val_ind))
 
     num_workers = 0
     pin_memory = False
