@@ -67,7 +67,7 @@ def processed_split_loaders(no_folds, fold,  batch_size, seed, device='cpu', p_t
         np.random.shuffle(all_indices)
 
     # set the proportion of division of the training data
-    portion = dataset_size / float(no_folds) + 1.0
+    portion = dataset_size / float(no_folds)
 
     # Separate a test split from the training dataset
     test_split = int(np.floor(p_test * len(all_indices)))
