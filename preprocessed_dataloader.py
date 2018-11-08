@@ -11,8 +11,8 @@ import numpy as np
 
 class PreprocessedDataset(Dataset):
 
-    def __init__(self, image_dir=(str(Path.home()) + "/processed"), device='cpu'):
-        self.image_dir = image_dir
+    def __init__(self, device='cpu'):
+        self.image_dir = str(Path.home()) + "/processed"
         self.device = device
 
     def __len__(self):
