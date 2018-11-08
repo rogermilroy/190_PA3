@@ -26,7 +26,8 @@ class PreprocessedDataset(Dataset):
         return (image, label)
 
 
-def processed_split_loaders(no_folds, fold,  batch_size, seed, device, p_test=0.1, shuffle=True,
+def processed_split_loaders(no_folds, fold,  batch_size, seed, device='cpu', p_test=0.1,
+                            shuffle=True,
                          extras={}):
     """ Modified from create_split_loaders in xray_dataloader.py by Jenny Hamer.
 
@@ -66,7 +67,7 @@ def processed_split_loaders(no_folds, fold,  batch_size, seed, device, p_test=0.
         np.random.shuffle(all_indices)
 
     # set the proportion of division of the training data
-    portion = float(fold) / float(no_folds) + 1.0
+    portion = dataset_size / float(no_folds) + 1.0
 
     # Separate a test split from the training dataset
     test_split = int(np.floor(p_test * len(all_indices)))
@@ -74,8 +75,8 @@ def processed_split_loaders(no_folds, fold,  batch_size, seed, device, p_test=0.
 
     # TODO verify
     train_set = set(train_ind)
-    val_ind = set(train_ind[int((fold-1) * portion): int(fold * portion)])
-    train_ind = train_set.difference(val_ind)
+    val_ind = set(train_ind[int(fold * portion): int((fold + 1) * portion)])
+    train_ind = train_set - val_ind
 
     # Use the SubsetRandomSampler as the iterator for each subset
     sample_train = SubsetRandomSampler(train_ind)
@@ -106,3 +107,6 @@ def processed_split_loaders(no_folds, fold,  batch_size, seed, device, p_test=0.
     return (train_loader, val_loader, test_loader)
 
 
+if __name__ == '__main__':
+    train, val, test = processed_split_loaders(2, 1, 32, 42)
+    len(val)
