@@ -122,7 +122,7 @@ def sub_matrix(output, target):
         else:
             t = output / pos
             temp.append(t)
-    return torch.cat(temp)
+    return torch.stack(temp)
 
 
 def confusion_matrix(outputs, targets):
@@ -135,7 +135,7 @@ def confusion_matrix(outputs, targets):
         row = temp[j]
         row /= torch.sum(row)
         new.append(row)
-    return torch.cat(new)
+    return torch.stack(new)
 
 
 def test(model, computing_device, loader, criterion):
