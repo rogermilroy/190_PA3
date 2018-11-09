@@ -14,7 +14,7 @@ learning_rate = 0.001
 seed = np.random.seed(42)  # Seed the random number generator for reproducibility
 p_test = 0.1  # Percent of the overall dataset to reserve for testing
 num_folds = 4
-results_dir = './results/kfold-deep'
+results_dir = './results/kfold-deep-weighted'
 
 if not os.path.exists(results_dir):
     os.makedirs(results_dir)
