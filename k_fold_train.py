@@ -99,7 +99,7 @@ for i in range(num_folds):
                 N_minibatch_loss /= N
                 with open(trace_file, 'a+') as f:
                     f.write(str(epoch + 1) + ',' + str(minibatch_count) + ',' +
-                            str(N_minibatch_loss))
+                            str(N_minibatch_loss) + '\n')
 
                 # Add the averaged loss over N minibatches and reset the counter
                 avg_minibatch_loss.append(N_minibatch_loss)
@@ -124,7 +124,7 @@ for i in range(num_folds):
                 with open(val_file, 'a+') as f1:
                     f1.write(str(total_val_loss) + ',' + str(avg_val_loss) + ',' + str(accuracy)
                              + ',' + str(precision) + ',' + str(recall) + ',' + str(balance)
-                             + ',' + str(conf))
+                             + ',' + str(conf) + '\n')
                 if increasing_epochs > early_stop_epochs:
                     break
 
@@ -137,5 +137,5 @@ for i in range(num_folds):
     with open(test_file, 'a+') as f2:
         f2.write(str(epoch) + ',' + str(total_loss) + ',' + str(avg_minibatch_loss) + ',' +
                  str(total_test_loss) + ',' + str(avg_test_loss) + ',' + str(tacc) + ',' + str(tpr)
-                 + ',' + str(tre) + ',' + str(tbal) + ',' + str(conf))
+                 + ',' + str(tre) + ',' + str(tbal) + ',' + str(conf) + '\n')
 
