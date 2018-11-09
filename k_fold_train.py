@@ -113,7 +113,8 @@ for i in range(num_folds):
             if minibatch_count % (4 * N) == 0 and minibatch_count != 0:
 
                 # validation
-                total_val_loss, avg_val_loss, accuracy, precision, recall, balance = testing.test(
+                total_val_loss, avg_val_loss, accuracy, precision, recall, balance, \
+                conf = testing.test(
                     model,
                     computing_device,
                     val_loader,
@@ -126,7 +127,8 @@ for i in range(num_folds):
                     increasing_epochs += 1
                 with open(val_file, 'w+') as f1:
                     f1.write(str(total_val_loss) + ',' + str(avg_val_loss) + ',' + str(accuracy)
-                             + ',' + str(precision) + ',' + str(recall) + ',' + str(balance))
+                             + ',' + str(precision) + ',' + str(recall) + ',' + str(balance)
+                             + ',' + str(conf))
                 if increasing_epochs > early_stop_epochs:
                     break
 
@@ -139,5 +141,5 @@ for i in range(num_folds):
     with open(test_file, 'w+') as f2:
         f2.write(str(epoch) + ',' + str(total_loss) + ',' + str(avg_minibatch_loss) + ',' +
                  str(total_test_loss) + ',' + str(avg_test_loss) + ',' + str(tacc) + ',' + str(tpr)
-                 + ',' + str(tre) + ',' + str(tbal))
+                 + ',' + str(tre) + ',' + str(tbal) + ',' + str(conf))
 
