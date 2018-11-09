@@ -131,8 +131,7 @@ class DeepCNN(nn.Module):
         batch = self.fc2(batch)
 
         # Return the class predictions
-        # TODO: apply an activition function to 'batch'
-        return func.sigmoid(batch)  # .to(torch.long)
+        return batch
 
     def num_flat_features(self, inputs):
         # Get the dimensions of the layers excluding the inputs

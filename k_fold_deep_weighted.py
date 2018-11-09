@@ -1,5 +1,6 @@
 
 from deep_cnn import DeepCNN
+import torch
 from torch import optim
 from torch.nn import functional
 import testing
@@ -39,8 +40,15 @@ model = DeepCNN()
 model = model.to(computing_device)
 print("Model on CUDA?", next(model.parameters()).is_cuda)
 
+total_samples = 112120.0
+
+frequencies = torch.tensor([11535.0, 2772.0, 13307.0, 19870.0, 5746.0, 6323.0, 1353.0, 5298.0 ,
+                            4667.0, 2303.0, 2516.0, 1686.0, 3385.0, 227.0])
+
+weights = frequencies / total_samples
+
 # Use bce with logits for additional numerical stability.
-criterion = functional.binary_cross_entropy_with_logits
+criterion = functional.binary_cross_entropy_with_logits(weight=weights)
 
 
 # Instantiate the gradient descent optimizer - use Adam optimizer with default parameters
