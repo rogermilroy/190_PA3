@@ -125,9 +125,9 @@ def sub_matrix(output, target):
     return torch.stack(temp)
 
 
-def confusion_matrix(outputs, targets):
+def confusion_matrix(outputs, targets, computing_device):
     dims = len(targets[0])
-    temp = torch.zeros((dims, dims))
+    temp = torch.zeros((dims, dims)).to(computing_device)
     new = []
     for i in range(len(targets)):
         temp += sub_matrix(outputs[i], targets[i])
@@ -141,30 +141,31 @@ def confusion_matrix(outputs, targets):
 def test(model, computing_device, loader, criterion):
     acc, pr, re, bal, conf = None, None, None, None, None
     total_val_loss = 0.0
-    for i, (val_images, val_labels) in enumerate(loader):
-        val_images, val_labels = val_images.to(computing_device), val_labels.to(computing_device)
-        val_out = model(val_images)
-        val_loss = criterion(val_out, val_labels)
-        total_val_loss += float(val_loss)
+    with torch.no_grad():
+        for i, (val_images, val_labels) in enumerate(loader):
+            val_images, val_labels = val_images.to(computing_device), val_labels.to(computing_device)
+            val_out = model(val_images)
+            val_loss = criterion(val_out, val_labels)
+            total_val_loss += float(val_loss)
 
-        if i == 0:
-            acc = torch.zeros_like(val_labels[0], dtype=torch.float)
-            pr = torch.zeros_like(val_labels[0], dtype=torch.float)
-            re = torch.zeros_like(val_labels[0], dtype=torch.float)
-            bal = torch.zeros_like(val_labels[0], dtype=torch.float)
-            conf = torch.zeros((len(val_labels[0]), len(val_labels[0])))
-        acc += accuracy(val_out, val_labels)
-        pr += aggregate_precision(val_out, val_labels)
-        re += aggregate_recall(val_out, val_labels)
-        bal += aggregate_balance(val_out, val_labels)
-        conf += confusion_matrix(val_out, val_labels)
+            if i == 0:
+                acc = torch.zeros_like(val_labels[0], dtype=torch.float)
+                pr = torch.zeros_like(val_labels[0], dtype=torch.float)
+                re = torch.zeros_like(val_labels[0], dtype=torch.float)
+                bal = torch.zeros_like(val_labels[0], dtype=torch.float)
+                conf = torch.zeros((len(val_labels[0]), len(val_labels[0]))).to(computing_device)
+            acc += accuracy(val_out, val_labels)
+            pr += aggregate_precision(val_out, val_labels)
+            re += aggregate_recall(val_out, val_labels)
+            bal += aggregate_balance(val_out, val_labels)
+            conf += confusion_matrix(val_out, val_labels, computing_device)
 
-    avg_val_loss = total_val_loss / float(i)
-    acc /= float(i)
-    pr /= float(i)
-    re /= float(i)
-    bal /= float(i)
-    conf /= float(i)
+        avg_val_loss = total_val_loss / float(i)
+        acc /= float(i)
+        pr /= float(i)
+        re /= float(i)
+        bal /= float(i)
+        conf /= float(i)
     return (total_val_loss, avg_val_loss, acc, pr, re, bal, conf)
 
 
