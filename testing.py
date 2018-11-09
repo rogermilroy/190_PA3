@@ -127,7 +127,7 @@ def sub_matrix(output, target):
 
 def confusion_matrix(outputs, targets):
     dims = len(targets[0])
-    temp = torch.new_zeros((dims, dims))
+    temp = torch.zeros((dims, dims))
     new = []
     for i in range(len(targets)):
         temp += sub_matrix(outputs[i], targets[i])
@@ -152,7 +152,7 @@ def test(model, computing_device, loader, criterion):
             pr = torch.zeros_like(val_labels[0], dtype=torch.float)
             re = torch.zeros_like(val_labels[0], dtype=torch.float)
             bal = torch.zeros_like(val_labels[0], dtype=torch.float)
-            conf = torch.new_zeros((len(val_labels[0]), len(val_labels[0])))
+            conf = torch.zeros((len(val_labels[0]), len(val_labels[0])))
         acc += accuracy(val_out, val_labels)
         pr += aggregate_precision(val_out, val_labels)
         re += aggregate_recall(val_out, val_labels)
