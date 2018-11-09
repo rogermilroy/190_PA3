@@ -124,18 +124,21 @@ for i in range(num_folds):
                 with open(val_file, 'a+') as f1:
                     f1.write(str(total_val_loss) + ',' + str(avg_val_loss) + ',' + str(accuracy)
                              + ',' + str(precision) + ',' + str(recall) + ',' + str(balance)
-                             + ',' + str(conf) + '\n')
+                             + '\n')
+                torch.save(conf, val_file + '-conf' + str(epoch) + '-' + str(minibatch_count))
                 if increasing_epochs > early_stop_epochs:
                     break
 
     if best_params is not None:
         model.load_state_dict(best_params)
     # test
-    total_test_loss, avg_test_loss, tacc, tpr, tre, tbal = testing.test(model, computing_device,
+    total_test_loss, avg_test_loss, tacc, tpr, tre, tbal, tconf= testing.test(model,
+                                                                             computing_device,
                                                                         test_loader, criterion)
 
     with open(test_file, 'a+') as f2:
         f2.write(str(epoch) + ',' + str(total_loss) + ',' + str(avg_minibatch_loss) + ',' +
                  str(total_test_loss) + ',' + str(avg_test_loss) + ',' + str(tacc) + ',' + str(tpr)
-                 + ',' + str(tre) + ',' + str(tbal) + ',' + str(conf) + '\n')
+                 + ',' + str(tre) + ',' + str(tbal) + '\n')
+    torch.save(tconf, test_file + '-test-conf')
 
