@@ -97,7 +97,7 @@ for i in range(num_folds):
             if minibatch_count % N == 0 and minibatch_count != 0:
                 # Print the loss averaged over the last N mini-batches
                 N_minibatch_loss /= N
-                with open(trace_file, 'w+') as f:
+                with open(trace_file, 'a+') as f:
                     f.write(str(epoch + 1) + ',' + str(minibatch_count) + ',' +
                             str(N_minibatch_loss))
 
@@ -121,7 +121,7 @@ for i in range(num_folds):
                     increasing_epochs = 0
                 else:
                     increasing_epochs += 1
-                with open(val_file, 'w+') as f1:
+                with open(val_file, 'a+') as f1:
                     f1.write(str(total_val_loss) + ',' + str(avg_val_loss) + ',' + str(accuracy)
                              + ',' + str(precision) + ',' + str(recall) + ',' + str(balance)
                              + ',' + str(conf))
@@ -134,7 +134,7 @@ for i in range(num_folds):
     total_test_loss, avg_test_loss, tacc, tpr, tre, tbal = testing.test(model, computing_device,
                                                                         test_loader, criterion)
 
-    with open(test_file, 'w+') as f2:
+    with open(test_file, 'a+') as f2:
         f2.write(str(epoch) + ',' + str(total_loss) + ',' + str(avg_minibatch_loss) + ',' +
                  str(total_test_loss) + ',' + str(avg_test_loss) + ',' + str(tacc) + ',' + str(tpr)
                  + ',' + str(tre) + ',' + str(tbal) + ',' + str(conf))
