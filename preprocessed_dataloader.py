@@ -26,9 +26,8 @@ class PreprocessedDataset(Dataset):
         return (image, label)
 
 
-def processed_split_loaders(no_folds, fold,  batch_size, seed, device='cpu', p_test=0.1,
-                            shuffle=True,
-                         extras={}):
+def processed_split_loaders(batch_size, seed, device='cpu', p_val=0.1, p_test=0.2,
+                            shuffle=True, extras={}):
     """ Modified from create_split_loaders in xray_dataloader.py by Jenny Hamer.
 
     Params:
@@ -66,22 +65,18 @@ def processed_split_loaders(no_folds, fold,  batch_size, seed, device='cpu', p_t
         np.random.seed(seed)
         np.random.shuffle(all_indices)
 
-    # set the proportion of division of the training data
-    portion = dataset_size / float(no_folds)
+    # Create the validation split from the full dataset
+    val_split = int(np.floor(p_val * dataset_size))
+    train_ind, val_ind = all_indices[val_split:], all_indices[: val_split]
 
     # Separate a test split from the training dataset
-    test_split = int(np.floor(p_test * len(all_indices)))
-    train_ind, test_ind = all_indices[test_split:], all_indices[: test_split]
-
-    # TODO verify
-    train_set = set(train_ind)
-    val_ind = set(train_ind[int(fold * portion): int((fold + 1) * portion)])
-    train_ind = train_set - val_ind
+    test_split = int(np.floor(p_test * len(train_ind)))
+    train_ind, test_ind = train_ind[test_split:], train_ind[: test_split]
 
     # Use the SubsetRandomSampler as the iterator for each subset
-    sample_train = SubsetRandomSampler(list(train_ind))
+    sample_train = SubsetRandomSampler(train_ind)
     sample_test = SubsetRandomSampler(test_ind)
-    sample_val = SubsetRandomSampler(list(val_ind))
+    sample_val = SubsetRandomSampler(val_ind)
 
     num_workers = 0
     pin_memory = False
@@ -106,7 +101,3 @@ def processed_split_loaders(no_folds, fold,  batch_size, seed, device='cpu', p_t
     # Return the training, validation, test DataLoader objects
     return (train_loader, val_loader, test_loader)
 
-
-if __name__ == '__main__':
-    train, val, test = processed_split_loaders(2, 1, 32, 42)
-    len(val)

@@ -12,7 +12,7 @@ batch_size = 128  # Number of samples in each minibatch
 learning_rate = 0.001
 seed = np.random.seed(42)  # Seed the random number generator for reproducibility
 p_test = 0.1  # Percent of the overall dataset to reserve for testing
-num_folds = 4
+num_folds = 2
 results_dir = './results/kfold-deep'
 
 if not os.path.exists(results_dir):
@@ -52,7 +52,7 @@ for i in range(num_folds):
     val_file = results_dir + '/val-' + str(i)
     test_file = results_dir + '/test-' + str(i)
     # Setup the training, validation, and testing dataloaders
-    train_loader, val_loader, test_loader = processed_split_loaders(num_folds, i, batch_size,
+    train_loader, val_loader, test_loader = processed_split_loaders(batch_size,
                                                                     seed,
                                                                     p_test=p_test,
                                                                     shuffle=True,
