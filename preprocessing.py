@@ -35,10 +35,11 @@ def augment_flip():
         # don't flip cardiomegaly images because the heart doesn't change orientations (almost ever)
         if label[1] == 1.0:
             continue
-        flipped_image = tran(image)
-        to_store = (flipped_image, label)
-        torch.save(to_store,filename + str(index))
-        index += 1
+        elif torch.sum(label).item() >= 1.0:
+            flipped_image = tran(image)
+            to_store = (flipped_image, label)
+            torch.save(to_store, filename + str(index))
+            index += 1
 
 if __name__ == '__main__':
     augment_flip()
