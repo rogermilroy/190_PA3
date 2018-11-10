@@ -82,7 +82,6 @@ class DeeperCNN(nn.Module):
         self.conv7_normed = nn.BatchNorm2d(10)
         torch_init.xavier_normal_(self.conv7.weight)
 
-
         self.conv8 = nn.Conv2d(in_channels=10, out_channels=8, kernel_size=6)
         self.conv8_normed = nn.BatchNorm2d(8)
         torch_init.xavier_normal_(self.conv8.weight)
@@ -128,9 +127,9 @@ class DeeperCNN(nn.Module):
 
         batch = self.pool(batch)
 
-        batch = func.relu(self.conv6_normed(self.conv6(batch)))
+        batch = func.relu(self.conv7_normed(self.conv7(batch)))
 
-        batch = func.relu(self.conv6_normed(self.conv6(batch)))
+        batch = func.relu(self.conv8_normed(self.conv8(batch)))
 
         batch = self.pool2(batch)
 
