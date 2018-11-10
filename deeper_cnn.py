@@ -73,7 +73,7 @@ class DeeperCNN(nn.Module):
         torch_init.xavier_normal_(self.conv5.weight)
 
         self.conv6 = nn.Conv2d(in_channels=14, out_channels=12, kernel_size=6)
-        self.conv6_normed = nn.BatchNorm2d(8)
+        self.conv6_normed = nn.BatchNorm2d(12)
         torch_init.xavier_normal_(self.conv6.weight)
 
         self.pool = nn.MaxPool2d(kernel_size=4, stride=4)
