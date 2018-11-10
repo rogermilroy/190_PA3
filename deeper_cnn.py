@@ -46,7 +46,7 @@ class DeeperCNN(nn.Module):
         super(DeeperCNN, self).__init__()
 
         # conv1: 1 input channel, 12 output channels, [8x8] kernel size
-        self.conv1 = nn.Conv2d(in_channels=1, out_channels=24, kernel_size=8)
+        self.conv1 = nn.Conv2d(in_channels=1, out_channels=24, kernel_size=12)
 
         # Add batch-normalization to the outputs of conv1
         self.conv1_normed = nn.BatchNorm2d(24)
@@ -55,7 +55,7 @@ class DeeperCNN(nn.Module):
         torch_init.xavier_normal_(self.conv1.weight)
 
         # conv2: 24 input channels, 16 output channels, [8x8] kernel
-        self.conv2 = nn.Conv2d(in_channels=24, out_channels=24, kernel_size=8)
+        self.conv2 = nn.Conv2d(in_channels=24, out_channels=24, kernel_size=12)
         self.conv2_normed = nn.BatchNorm2d(24)
         torch_init.xavier_normal_(self.conv2.weight)
 
@@ -64,19 +64,30 @@ class DeeperCNN(nn.Module):
         self.conv3_normed = nn.BatchNorm2d(20)
         torch_init.xavier_normal_(self.conv3.weight)
 
-        self.conv4 = nn.Conv2d(in_channels=20, out_channels=16, kernel_size=6)
+        self.conv4 = nn.Conv2d(in_channels=20, out_channels=16, kernel_size=8)
         self.conv4_normed = nn.BatchNorm2d(16)
         torch_init.xavier_normal_(self.conv4.weight)
 
-        self.conv5 = nn.Conv2d(in_channels=16, out_channels=12, kernel_size=6)
-        self.conv5_normed = nn.BatchNorm2d(12)
+        self.conv5 = nn.Conv2d(in_channels=16, out_channels=14, kernel_size=6)
+        self.conv5_normed = nn.BatchNorm2d(14)
         torch_init.xavier_normal_(self.conv5.weight)
 
-        self.conv6 = nn.Conv2d(in_channels=12, out_channels=8, kernel_size=4)
+        self.conv6 = nn.Conv2d(in_channels=14, out_channels=12, kernel_size=6)
         self.conv6_normed = nn.BatchNorm2d(8)
         torch_init.xavier_normal_(self.conv6.weight)
 
-        self.pool = nn.MaxPool2d(kernel_size=4, stride=3)
+        self.pool = nn.MaxPool2d(kernel_size=4, stride=4)
+
+        self.conv7 = nn.Conv2d(in_channels=12, out_channels=10, kernel_size=6)
+        self.conv7_normed = nn.BatchNorm2d(10)
+        torch_init.xavier_normal_(self.conv7.weight)
+
+
+        self.conv8 = nn.Conv2d(in_channels=10, out_channels=8, kernel_size=6)
+        self.conv8_normed = nn.BatchNorm2d(8)
+        torch_init.xavier_normal_(self.conv8.weight)
+
+        self.pool2 = nn.MaxPool2d(kernel_size=3, stride=3)
 
         self.fc = nn.Linear(in_features=128, out_features=14)
         torch_init.xavier_normal_(self.fc.weight)
@@ -109,7 +120,6 @@ class DeeperCNN(nn.Module):
 
         # Pass the output of conv3 to the pooling layer
 
-
         batch = func.relu(self.conv4_normed(self.conv4(batch)))
 
         batch = func.relu(self.conv5_normed(self.conv5(batch)))
@@ -117,6 +127,12 @@ class DeeperCNN(nn.Module):
         batch = func.relu(self.conv6_normed(self.conv6(batch)))
 
         batch = self.pool(batch)
+
+        batch = func.relu(self.conv6_normed(self.conv6(batch)))
+
+        batch = func.relu(self.conv6_normed(self.conv6(batch)))
+
+        batch = self.pool2(batch)
 
         # Reshape the output of the conv3 to pass to fully-connected layer
         batch = batch.view(-1, self.num_flat_features(batch))
