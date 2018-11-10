@@ -51,7 +51,7 @@ def precision(outputs, targets):
 
     prec = torch.mul(torch.div(true, sum), 100.)
 
-    return prec
+    return torch.squeeze(prec)
 
 
 def recall(outputs, targets):
@@ -76,12 +76,12 @@ def recall(outputs, targets):
 
     rec = torch.div(true, sum)
 
-    return rec
+    return torch.squeeze(rec)
 
 
 def balance(outputs, targets):
     temp = torch.div(precision(outputs, targets) + recall(outputs, targets), 2)
-    return temp
+    return torch.squeeze(temp)
 
 
 def aggregate_precision(outputs, targets):
