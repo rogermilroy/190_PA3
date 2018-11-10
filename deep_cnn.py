@@ -58,7 +58,7 @@ class DeepCNN(nn.Module):
         torch_init.xavier_normal_(self.conv1.weight)
 
         # conv2: 24 input channels, 16 output channels, [8x8] kernel
-        self.conv2 = nn.Conv2d(in_channels=24, out_channels=18, kernel_size=8, stride=2)
+        self.conv2 = nn.Conv2d(in_channels=24, out_channels=18, kernel_size=8)
         self.conv2_normed = nn.BatchNorm2d(18)
         torch_init.xavier_normal_(self.conv2.weight)
 

@@ -9,7 +9,7 @@ from preprocessed_dataloader import *
 # Setup: initialize the hyperparameters/variables
 num_epochs = 10  # Number of full passes through the dataset
 early_stop_epochs = 10
-batch_size = 128  # Number of samples in each minibatch
+batch_size = 64  # Number of samples in each minibatch
 learning_rate = 0.001
 seed = np.random.seed(42)  # Seed the random number generator for reproducibility
 p_test = 0.1  # Percent of the overall dataset to reserve for testing
