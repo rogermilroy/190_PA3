@@ -49,9 +49,9 @@ def precision(outputs, targets):
 
     sum = true + false + eps
 
-    prec = torch.mul(torch.div(true, sum), 100.)
+    prec = torch.div(true, sum)
 
-    return torch.squeeze(prec)
+    return prec
 
 
 def recall(outputs, targets):
@@ -76,12 +76,12 @@ def recall(outputs, targets):
 
     rec = torch.div(true, sum)
 
-    return torch.squeeze(rec)
+    return rec
 
 
 def balance(outputs, targets):
     temp = torch.div(precision(outputs, targets) + recall(outputs, targets), 2)
-    return torch.squeeze(temp)
+    return temp
 
 
 def aggregate_precision(outputs, targets):
@@ -150,9 +150,9 @@ def test(model, computing_device, loader, criterion):
 
             if i == 0:
                 acc = torch.zeros_like(val_labels[0], dtype=torch.float)
-                pr = torch.zeros_like(val_labels[0], dtype=torch.float)
-                re = torch.zeros_like(val_labels[0], dtype=torch.float)
-                bal = torch.zeros_like(val_labels[0], dtype=torch.float)
+                pr = 0.0
+                re = 0.0
+                bal = 0.0
                 conf = torch.zeros((len(val_labels[0]), len(val_labels[0]))).to(computing_device)
             acc += accuracy(val_out, val_labels)
             pr += aggregate_precision(val_out, val_labels)
@@ -167,5 +167,3 @@ def test(model, computing_device, loader, criterion):
         bal /= float(i)
         conf /= float(i)
     return (total_val_loss, avg_val_loss, acc, pr, re, bal, conf)
-
-
