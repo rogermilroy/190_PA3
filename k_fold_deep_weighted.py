@@ -48,7 +48,7 @@ frequencies = torch.tensor([11535.0, 2772.0, 13307.0, 19870.0, 5746.0, 6323.0, 1
 weights = frequencies / total_samples
 
 # Use bce with logits for additional numerical stability.
-criterion = functional.binary_cross_entropy_with_logits(weight=weights)
+criterion = torch.nn.BCEWithLogitsLoss(weight=weights)
 
 
 # Instantiate the gradient descent optimizer - use Adam optimizer with default parameters
