@@ -134,8 +134,8 @@ for i in range(num_folds):
                              + ',' + str(precision) + ',' + str(recall) + ',' + str(balance)
                              + '\n')
                 torch.save(conf, val_file + '-conf' + str(epoch) + '-' + str(minibatch_count))
-                if increasing_epochs > early_stop_epochs:
-                    break
+        if increasing_epochs > early_stop_epochs:
+            break
 
     if best_params is not None:
         model.load_state_dict(best_params)
