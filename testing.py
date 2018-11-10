@@ -86,19 +86,19 @@ def balance(outputs, targets):
 
 def aggregate_precision(outputs, targets):
     prec = precision(outputs, targets)
-    agg = torch.sum(prec) / len(prec)
+    agg = torch.sum(prec) / float(len(prec))
     return agg.item()
 
 
 def aggregate_recall(outputs, targets):
     rec = recall(outputs, targets)
-    agg = torch.sum(rec) / len(rec)
+    agg = torch.sum(rec) / float(len(rec))
     return agg.item()
 
 
 def aggregate_balance(outputs, targets):
     b = balance(outputs, targets)
-    agg = torch.sum(b) / len(b)
+    agg = torch.sum(b) / float(len(b))
     return agg.item()
 
 
