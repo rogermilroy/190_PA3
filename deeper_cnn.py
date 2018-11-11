@@ -46,7 +46,7 @@ class DeeperCNN(nn.Module):
         super(DeeperCNN, self).__init__()
 
         # conv1: 1 input channel, 12 output channels, [8x8] kernel size
-        self.conv1 = nn.Conv2d(in_channels=1, out_channels=24, kernel_size=12)
+        self.conv1 = nn.Conv2d(in_channels=1, out_channels=24, kernel_size=12, stride=2)
 
         # Add batch-normalization to the outputs of conv1
         self.conv1_normed = nn.BatchNorm2d(24)
