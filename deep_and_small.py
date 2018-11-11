@@ -88,7 +88,7 @@ class DeepAndSmallCNN(nn.Module):
 
         self.pool2 = nn.MaxPool2d(kernel_size=2, stride=2)
 
-        self.fc = nn.Linear(in_features=1568, out_features=14)
+        self.fc = nn.Linear(in_features=392, out_features=14)
         torch_init.xavier_normal_(self.fc.weight)
 
     def forward(self, batch):
