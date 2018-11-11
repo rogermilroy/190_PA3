@@ -149,7 +149,7 @@ for i in range(num_folds):
                                                                         test_loader, criterion)
 
     with open(test_file, 'a+') as f2:
-        f2.write(str(epoch) + ',' + str(total_loss) + ',' + str(avg_minibatch_loss) + ',' +
+        f2.write(str(epoch) + ',' + str(avg_minibatch_loss) + ',' +
                  str(total_test_loss) + ',' + str(avg_test_loss) + ',' + str(tacc) + ',' + str(tpr)
                  + ',' + str(tre) + ',' + str(tbal) + '\n')
     torch.save(tconf, test_file + '-test-conf')
