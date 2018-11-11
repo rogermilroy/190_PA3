@@ -7,14 +7,14 @@ import testing
 from preprocessed_dataloader import *
 
 # Setup: initialize the hyperparameters/variables
-num_epochs = 5  # Number of full passes through the dataset
+num_epochs = 10  # Number of full passes through the dataset
 early_stop_epochs = 10
 batch_size = 32  # Number of samples in each minibatch
-learning_rate = 0.005
+learning_rate = 0.1
 seed = np.random.seed(42)  # Seed the random number generator for reproducibility
 p_test = 0.1  # Percent of the overall dataset to reserve for testing
 num_folds = 2
-results_dir = './results/kfold-basic-weighted'
+results_dir = './results/kfold-basic-weighted-1'
 
 if not os.path.exists(results_dir):
     os.makedirs(results_dir)
@@ -153,4 +153,5 @@ for i in range(num_folds):
                  str(total_test_loss) + ',' + str(avg_test_loss) + ',' + str(tacc) + ',' + str(tpr)
                  + ',' + str(tre) + ',' + str(tbal) + '\n')
     torch.save(tconf, test_file + '-test-conf')
+    torch.save(best_params, test_file + '-params')
 
