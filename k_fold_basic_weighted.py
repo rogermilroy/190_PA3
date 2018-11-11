@@ -10,7 +10,7 @@ from preprocessed_dataloader import *
 num_epochs = 5  # Number of full passes through the dataset
 early_stop_epochs = 10
 batch_size = 32  # Number of samples in each minibatch
-learning_rate = 0.001
+learning_rate = 0.005
 seed = np.random.seed(42)  # Seed the random number generator for reproducibility
 p_test = 0.1  # Percent of the overall dataset to reserve for testing
 num_folds = 2
@@ -118,7 +118,7 @@ for i in range(num_folds):
                 N_minibatch_loss = 0.0
 
             # validate every 4 N minibatches. as validation more expensive now.
-            if minibatch_count % (4 * N) == 0 and minibatch_count != 0:
+            if minibatch_count % (6 * N) == 0 and minibatch_count != 0:
 
                 # validation
                 total_val_loss, avg_val_loss, accuracy, precision, recall, balance, \
