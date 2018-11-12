@@ -26,10 +26,10 @@ class PreprocessedDataset(Dataset):
         return (image, label)
 
 
-def processed_split_loaders(batch_size, seed, device='cpu', p_val=0.1, p_test=0.2,
-                            shuffle=True, extras={}):
+def processed_split_loaders(no_folds, fold,  batch_size, seed, device='cpu', p_test=0.1,
+                            shuffle=True,
+                         extras={}):
     """ Modified from create_split_loaders in xray_dataloader.py by Jenny Hamer.
-
     Params:
     -------
     - batch_size: (int) mini-batch size to load at a time
@@ -45,7 +45,6 @@ def processed_split_loaders(batch_size, seed, device='cpu', p_val=0.1, p_test=0.
         - pin_memory: (bool) For use with CUDA - copy tensors into pinned memory
                   (set to True if using a GPU)
         Otherwise, extras is an empty dict.
-
     Returns:
     --------
     - train_loader: (DataLoader) The iterator for the training set
@@ -65,18 +64,22 @@ def processed_split_loaders(batch_size, seed, device='cpu', p_val=0.1, p_test=0.
         np.random.seed(seed)
         np.random.shuffle(all_indices)
 
-    # Create the validation split from the full dataset
-    val_split = int(np.floor(p_val * dataset_size))
-    train_ind, val_ind = all_indices[val_split:], all_indices[: val_split]
+    # set the proportion of division of the training data
+    portion = dataset_size / float(no_folds)
 
     # Separate a test split from the training dataset
-    test_split = int(np.floor(p_test * len(train_ind)))
-    train_ind, test_ind = train_ind[test_split:], train_ind[: test_split]
+    test_split = int(np.floor(p_test * len(all_indices)))
+    train_ind, test_ind = all_indices[test_split:], all_indices[: test_split]
+
+    # TODO verify
+    train_set = set(train_ind)
+    val_ind = set(train_ind[int(fold * portion): int((fold + 1) * portion)])
+    train_ind = train_set - val_ind
 
     # Use the SubsetRandomSampler as the iterator for each subset
-    sample_train = SubsetRandomSampler(train_ind)
+    sample_train = SubsetRandomSampler(list(train_ind))
     sample_test = SubsetRandomSampler(test_ind)
-    sample_val = SubsetRandomSampler(val_ind)
+    sample_val = SubsetRandomSampler(list(val_ind))
 
     num_workers = 0
     pin_memory = False
