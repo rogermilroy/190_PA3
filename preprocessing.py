@@ -46,11 +46,10 @@ def create_subset():
     if not os.path.exists(str(Path.home()) + '/processed/subset'):
         os.makedirs(str(Path.home()) + '/processed/subset')
     train, val, subset = preprocessed_dataloader.processed_split_loaders(1, 0, 1, 12)
-    i = 0
-    for minibatch_count, image_label in enumerate(subset, 0):
-        for image in image_label:
-            torch.save(image, str(Path.home()) + '/processed/subset/image-' + str(i))
-            i += 1
+    for i, (image, label) in enumerate(subset, 0):
+        to_store = (image, label)
+        torch.save(to_store, str(Path.home()) + '/processed/subset/image-' + str(i))
+
 
 
 if __name__ == '__main__':
