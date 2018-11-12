@@ -13,7 +13,7 @@ batch_size = 32  # Number of samples in each minibatch
 learning_rate = 0.1
 seed = np.random.seed(42)  # Seed the random number generator for reproducibility
 p_test = 0.1  # Percent of the overall dataset to reserve for testing
-num_folds = 2
+num_folds = 4
 results_dir = './results/kfold-basic-weighted-1'
 
 if not os.path.exists(results_dir):
@@ -61,10 +61,15 @@ optimizer = optim.Adam(model.parameters())
 
 for i in range(num_folds):
     trace_file = results_dir + '/trace-' + str(i)
-    val_file = results_dir + '/val-' + str(i)
+    val_file = results_dir + '/val-loss-' + str(i)
+    val_class_file = results_dir + '/val-class-' + str(i)
+    val_agg_file = results_dir + '/val-agg-' + str(i)
     test_file = results_dir + '/test-' + str(i)
+    test_class_file = results_dir + '/test-' + str(i)
+    test_agg_file = results_dir + '/test-' + str(i)
     # Setup the training, validation, and testing dataloaders
-    train_loader, val_loader, test_loader = processed_split_loaders(batch_size,
+    train_loader, val_loader, test_loader = processed_split_loaders(num_folds, i,
+                                                                    batch_size,
                                                                     seed,
                                                                     p_test=p_test,
                                                                     shuffle=True,
@@ -121,37 +126,32 @@ for i in range(num_folds):
             if minibatch_count % (6 * N) == 0 and minibatch_count != 0:
 
                 # validation
-                total_val_loss, avg_val_loss, accuracy, precision, recall, balance, \
-                conf = testing.test(
+                losses, val_class, val_agg, conf = testing.test(
                     model,
                     computing_device,
                     val_loader,
                     criterion)
-                if total_val_loss < current_best_val:
-                    current_best_val = total_val_loss
+                if losses[0] < current_best_val:
+                    current_best_val = losses[0]
                     best_params = model.state_dict()
                     increasing_epochs = 0
                 else:
                     increasing_epochs += 1
-                with open(val_file, 'a+') as f1:
-                    f1.write(str(total_val_loss) + ',' + str(avg_val_loss) + ',' + str(accuracy)
-                             + ',' + str(precision) + ',' + str(recall) + ',' + str(balance)
-                             + '\n')
-                torch.save(conf, val_file + '-conf' + str(epoch) + '-' + str(minibatch_count))
+                testing.write_results(val_file, losses)
+                testing.write_results(val_class_file, val_class)
+                testing.write_results(val_agg_file, val_agg)
+                torch.save(conf, val_file + '-conf-' + str(epoch) + '-' + str(minibatch_count))
         if increasing_epochs > early_stop_epochs:
             break
 
     if best_params is not None:
         model.load_state_dict(best_params)
     # test
-    total_test_loss, avg_test_loss, tacc, tpr, tre, tbal , tconf = testing.test(model,
-                                                                             computing_device,
-                                                                        test_loader, criterion)
+    test_losses, tclass, tagg, tconf = testing.test(model, computing_device, test_loader, criterion)
 
-    with open(test_file, 'a+') as f2:
-        f2.write(str(epoch) + ',' + str(total_loss) + ',' + str(avg_minibatch_loss) + ',' +
-                 str(total_test_loss) + ',' + str(avg_test_loss) + ',' + str(tacc) + ',' + str(tpr)
-                 + ',' + str(tre) + ',' + str(tbal) + '\n')
+    testing.write_results(test_file, test_losses)
+    testing.write_results(test_class_file, tclass)
+    testing.write_results(test_agg_file, tagg)
     torch.save(tconf, test_file + '-test-conf')
     torch.save(best_params, test_file + '-params')
 

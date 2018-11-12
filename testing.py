@@ -128,8 +128,6 @@ def confusion_matrix(outputs, targets, computing_device):
 def test(model, computing_device, loader, criterion):
     acc, apr, re, bal, conf = None, None, None, None, None
     total_val_loss = 0.0
-    per_class = []
-    aggregated = []
     with torch.no_grad():
         for i, (val_images, val_labels) in enumerate(loader):
             val_images, val_labels = val_images.to(computing_device), val_labels.to(computing_device)
@@ -157,6 +155,15 @@ def test(model, computing_device, loader, criterion):
         conf /= float(i)
         per_class = [acc, pr, re, bal]
         aggregated = [aggregate(acc), aggregate(pr), aggregate(re), aggregate(bal)]
+        losses = [total_val_loss, avg_val_loss]
 
-    return (total_val_loss, avg_val_loss, per_class, aggregated, conf)
+
+    return (losses, per_class, aggregated, conf)
+
+
+def write_results(f, list_of_results):
+    with open(f) as file:
+        for item in list_of_results:
+            file.write(str(item) + ',')
+        file.write('\n')
 
