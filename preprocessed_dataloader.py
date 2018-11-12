@@ -11,8 +11,11 @@ import numpy as np
 
 class PreprocessedDataset(Dataset):
 
-    def __init__(self, device='cpu'):
-        self.image_dir = str(Path.home()) + "/processed"
+    def __init__(self, subset, device='cpu'):
+        if subset:
+            self.image_dir = str(Path.home()) + "/processed/subset"
+        else:
+            self.image_dir = str(Path.home()) + "/processed"
         self.device = device
 
     def __len__(self):
@@ -27,8 +30,7 @@ class PreprocessedDataset(Dataset):
 
 
 def processed_split_loaders(no_folds, fold,  batch_size, seed, device='cpu', p_test=0.1,
-                            shuffle=True,
-                         extras={}):
+                            shuffle=True, extras={}, subset=False):
     """ Modified from create_split_loaders in xray_dataloader.py by Jenny Hamer.
     Params:
     -------
@@ -53,7 +55,7 @@ def processed_split_loaders(no_folds, fold,  batch_size, seed, device='cpu', p_t
     """
 
     # Get create a ChestXrayDataset object
-    dataset = PreprocessedDataset(device=device)  # TODO add directory?
+    dataset = PreprocessedDataset(subset, device=device)
 
     # Dimensions and indices of training set
     dataset_size = len(dataset)

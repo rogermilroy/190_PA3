@@ -8,7 +8,7 @@ from pathlib import Path
 def process():
     def save_image(int, data):
         image_label = data[int]
-        torch.save(image_label, str(Path.home()) + '/processed/image-' + str(i))
+        torch.save(image_label, str(Path.home()) + '/processed/image-' + str(int))
 
 
     if not os.path.exists(str(Path.home()) + '/processed'):
@@ -41,8 +41,18 @@ def augment_flip():
             torch.save(to_store, filename + str(index))
             index += 1
 
+
+def create_subset():
+    train, val, subset = preprocessed_dataloader.processed_split_loaders(1, 0, 128, 12)
+    i = 0
+    for minibatch_count, image_label in enumerate(subset, 0):
+        for image in image_label:
+            torch.save(image, str(Path.home()) + '/processed/subset/image-' + str(i))
+            i += 1
+
+
 if __name__ == '__main__':
-    augment_flip()
+    create_subset()
 
 
 
