@@ -43,6 +43,8 @@ def augment_flip():
 
 
 def create_subset():
+    if not os.path.exists(str(Path.home()) + '/processed/subset'):
+        os.makedirs(str(Path.home()) + '/processed/subset')
     train, val, subset = preprocessed_dataloader.processed_split_loaders(1, 0, 128, 12)
     i = 0
     for minibatch_count, image_label in enumerate(subset, 0):
