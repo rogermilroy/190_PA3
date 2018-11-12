@@ -72,7 +72,7 @@ for i in range(num_folds):
                                                                     seed,
                                                                     p_test=p_test,
                                                                     shuffle=True,
-                                                                    extras=extras)
+                                                                    extras=extras, subset=True)
     # Track the loss across training
     total_loss = []
     avg_minibatch_loss = []
