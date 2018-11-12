@@ -135,7 +135,7 @@ class DeepTanCNN(nn.Module):
         batch = self.fc2(batch)
 
         # Return the class predictions
-        return batch
+        return func.sigmoid(batch)
 
     def num_flat_features(self, inputs):
         # Get the dimensions of the layers excluding the inputs

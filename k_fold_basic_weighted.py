@@ -50,7 +50,7 @@ print(weights)
 
 
 # Use bce with logits for additional numerical stability.
-criterion = torch.nn.BCEWithLogitsLoss(weight=weights.to(computing_device)).to(computing_device)
+criterion = torch.nn.BCELoss(weight=weights.to(computing_device)).to(computing_device)
 
 
 # Instantiate the gradient descent optimizer - use Adam optimizer with default parameters
