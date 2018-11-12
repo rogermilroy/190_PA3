@@ -86,7 +86,7 @@ def balance(outputs, targets):
 
 def aggregate(item):
     agg = torch.sum(item) / float(len(item))
-    return agg.item
+    return agg.item()
 
 
 def sub_matrix(output, target):
