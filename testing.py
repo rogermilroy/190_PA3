@@ -84,22 +84,9 @@ def balance(outputs, targets):
     return temp
 
 
-def aggregate_precision(outputs, targets):
-    prec = precision(outputs, targets)
-    agg = torch.sum(prec) / float(len(prec))
-    return agg.item()
-
-
-def aggregate_recall(outputs, targets):
-    rec = recall(outputs, targets)
-    agg = torch.sum(rec) / float(len(rec))
-    return agg.item()
-
-
-def aggregate_balance(outputs, targets):
-    b = balance(outputs, targets)
-    agg = torch.sum(b) / float(len(b))
-    return agg.item()
+def aggregate(item):
+    agg = torch.sum(item) / float(len(item))
+    return agg.item
 
 
 def sub_matrix(output, target):
@@ -139,8 +126,10 @@ def confusion_matrix(outputs, targets, computing_device):
 
 
 def test(model, computing_device, loader, criterion):
-    acc, pr, re, bal, conf = None, None, None, None, None
+    acc, apr, re, bal, conf = None, None, None, None, None
     total_val_loss = 0.0
+    per_class = []
+    aggregated = []
     with torch.no_grad():
         for i, (val_images, val_labels) in enumerate(loader):
             val_images, val_labels = val_images.to(computing_device), val_labels.to(computing_device)
@@ -150,14 +139,14 @@ def test(model, computing_device, loader, criterion):
 
             if i == 0:
                 acc = torch.zeros_like(val_labels[0], dtype=torch.float)
-                pr = 0.0
-                re = 0.0
-                bal = 0.0
+                pr = torch.zeros_like(val_labels[0], dtype=torch.float)
+                re = torch.zeros_like(val_labels[0], dtype=torch.float)
+                bal = torch.zeros_like(val_labels[0], dtype=torch.float)
                 conf = torch.zeros((len(val_labels[0]), len(val_labels[0]))).to(computing_device)
             acc += accuracy(val_out, val_labels)
-            pr += aggregate_precision(val_out, val_labels)
-            re += aggregate_recall(val_out, val_labels)
-            bal += aggregate_balance(val_out, val_labels)
+            pr += precision(val_out, val_labels)
+            re += recall(val_out, val_labels)
+            bal += balance(val_out, val_labels)
             conf += confusion_matrix(val_out, val_labels, computing_device)
 
         avg_val_loss = total_val_loss / float(i)
@@ -166,4 +155,8 @@ def test(model, computing_device, loader, criterion):
         re /= float(i)
         bal /= float(i)
         conf /= float(i)
-    return (total_val_loss, avg_val_loss, acc, pr, re, bal, conf)
+        per_class = [acc, pr, re, bal]
+        aggregated = [aggregate(acc), aggregate(pr), aggregate(re), aggregate(bal)]
+
+    return (total_val_loss, avg_val_loss, per_class, aggregated, conf)
+
