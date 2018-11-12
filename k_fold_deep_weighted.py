@@ -8,14 +8,14 @@ import testing
 from preprocessed_dataloader import *
 
 # Setup: initialize the hyperparameters/variables
-num_epochs = 10  # Number of full passes through the dataset
-early_stop_epochs = 10
+num_epochs = 15  # Number of full passes through the dataset
+early_stop_epochs = 15
 batch_size = 32  # Number of samples in each minibatch
 learning_rate = 0.1
 seed = np.random.seed(42)  # Seed the random number generator for reproducibility
 p_test = 0.1  # Percent of the overall dataset to reserve for testing
-num_folds = 2
-results_dir = './results/kfold-deep-small-1'
+num_folds = 4
+results_dir = './results/kfold-deep-subset'
 
 if not os.path.exists(results_dir):
     os.makedirs(results_dir)
@@ -37,7 +37,7 @@ else:  # Otherwise, train on the CPU
 
 
 # Instantiate a DeepCNN to run on the GPU or CPU based on CUDA support
-model = DeepAndSmallCNN()
+model = DeepCNN()
 model = model.to(computing_device)
 print("Model on CUDA?", next(model.parameters()).is_cuda)
 
