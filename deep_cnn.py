@@ -49,34 +49,36 @@ class DeepCNN(nn.Module):
         super(DeepCNN, self).__init__()
 
         # conv1: 1 input channel, 12 output channels, [8x8] kernel size
-        self.conv1 = nn.Conv2d(in_channels=1, out_channels=24, kernel_size=8, stride=2)
+        self.conv1 = nn.Conv2d(in_channels=1, out_channels=12, kernel_size=8)
 
         # Add batch-normalization to the outputs of conv1
-        self.conv1_normed = nn.BatchNorm2d(24)
+        self.conv1_normed = nn.BatchNorm2d(12)
 
         # Initialized weights using the Xavier-Normal method
         torch_init.xavier_normal_(self.conv1.weight)
 
         # conv2: 24 input channels, 16 output channels, [8x8] kernel
-        self.conv2 = nn.Conv2d(in_channels=24, out_channels=18, kernel_size=8)
-        self.conv2_normed = nn.BatchNorm2d(18)
+        self.conv2 = nn.Conv2d(in_channels=12, out_channels=12, kernel_size=8)
+        self.conv2_normed = nn.BatchNorm2d(12)
         torch_init.xavier_normal_(self.conv2.weight)
 
         # conv3: X input channels, 8 output channels, [6x6] kernel
-        self.conv3 = nn.Conv2d(in_channels=18, out_channels=16, kernel_size=6)
-        self.conv3_normed = nn.BatchNorm2d(16)
+        self.conv3 = nn.Conv2d(in_channels=12, out_channels=10, kernel_size=6)
+        self.conv3_normed = nn.BatchNorm2d(10)
         torch_init.xavier_normal_(self.conv3.weight)
 
-        # Apply max-pooling with a [3x3] kernel using tiling
-        self.pool = nn.MaxPool2d(kernel_size=3, stride=3)
+        # Apply max-pooling with a [2x2] kernel using tiling
+        self.pool = nn.MaxPool2d(kernel_size=2, stride=2)
 
-        self.conv4 = nn.Conv2d(in_channels=16, out_channels=12, kernel_size=4)
-        self.conv4_normed = nn.BatchNorm2d(12)
+        self.conv4 = nn.Conv2d(in_channels=10, out_channels=10, kernel_size=4)
+        self.conv4_normed = nn.BatchNorm2d(10)
         torch_init.xavier_normal_(self.conv4.weight)
 
-        self.conv5 = nn.Conv2d(in_channels=12, out_channels=8, kernel_size=4)
+        self.conv5 = nn.Conv2d(in_channels=10, out_channels=8, kernel_size=4)
         self.conv5_normed = nn.BatchNorm2d(8)
         torch_init.xavier_normal_(self.conv5.weight)
+
+        self.pool2 = nn.MaxPool2d(kernel_size=2, stride=2)
 
         # Define 2 fully connected layers:
         # TODO: Use the value you computed in Part 1, Question 4 for fc1's in_features
@@ -120,6 +122,8 @@ class DeepCNN(nn.Module):
         batch = func.relu(self.conv4_normed(self.conv4(batch)))
 
         batch = func.relu(self.conv5_normed(self.conv5(batch)))
+
+        batch = self.pool2(batch)
 
         # Reshape the output of the conv3 to pass to fully-connected layer
         batch = batch.view(-1, self.num_flat_features(batch))

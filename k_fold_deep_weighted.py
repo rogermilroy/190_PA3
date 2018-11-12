@@ -1,5 +1,5 @@
 from deep_and_small import DeepAndSmallCNN
-from deeper_cnn import DeeperCNN
+from deeper_cnn import DeepTanCNN
 from deep_cnn import DeepCNN
 import torch
 from torch import optim
@@ -41,10 +41,10 @@ model = DeepAndSmallCNN()
 model = model.to(computing_device)
 print("Model on CUDA?", next(model.parameters()).is_cuda)
 
-total_samples = 112120.0
+total_samples = 161056.0
 
-frequencies = torch.tensor([11535.0, 2772.0, 13307.0, 19870.0, 5746.0, 6323.0, 1353.0, 5298.0 ,
-                            4667.0, 2303.0, 2516.0, 1686.0, 3385.0, 227.0])
+frequencies = torch.tensor([22701.0,   2772.0,  25554.0,  39157.0,  11393.0,  12538.0,   2670.0,
+                            10548.0,   9165.0,   4479.0,   4988.0,   3321.0,   6659.0,    447.0])
 samples = torch.zeros_like(frequencies)
 samples += total_samples
 

@@ -46,33 +46,33 @@ class DeepAndSmallCNN(nn.Module):
         super(DeepAndSmallCNN, self).__init__()
 
         # conv1: 1 input channel, 12 output channels, [8x8] kernel size
-        self.conv1 = nn.Conv2d(in_channels=1, out_channels=24, kernel_size=4, stride=2)
+        self.conv1 = nn.Conv2d(in_channels=1, out_channels=16, kernel_size=3, padding=1)
 
         # Add batch-normalization to the outputs of conv1
-        self.conv1_normed = nn.BatchNorm2d(24)
+        self.conv1_normed = nn.BatchNorm2d(16)
 
         # Initialized weights using the Xavier-Normal method
         torch_init.xavier_normal_(self.conv1.weight)
 
         # conv2: 24 input channels, 16 output channels, [8x8] kernel
-        self.conv2 = nn.Conv2d(in_channels=24, out_channels=24, kernel_size=4)
-        self.conv2_normed = nn.BatchNorm2d(24)
+        self.conv2 = nn.Conv2d(in_channels=16, out_channels=18, kernel_size=3, padding=1)
+        self.conv2_normed = nn.BatchNorm2d(18)
         torch_init.xavier_normal_(self.conv2.weight)
 
         # conv3: X input channels, 8 output channels, [6x6] kernel
-        self.conv3 = nn.Conv2d(in_channels=24, out_channels=20, kernel_size=4, stride=2)
-        self.conv3_normed = nn.BatchNorm2d(20)
+        self.conv3 = nn.Conv2d(in_channels=18, out_channels=16, kernel_size=7, stride=2)
+        self.conv3_normed = nn.BatchNorm2d(16)
         torch_init.xavier_normal_(self.conv3.weight)
 
-        self.conv4 = nn.Conv2d(in_channels=20, out_channels=16, kernel_size=4)
+        self.conv4 = nn.Conv2d(in_channels=16, out_channels=16, kernel_size=3, padding=1)
         self.conv4_normed = nn.BatchNorm2d(16)
         torch_init.xavier_normal_(self.conv4.weight)
 
-        self.conv5 = nn.Conv2d(in_channels=16, out_channels=14, kernel_size=4, stride=2)
+        self.conv5 = nn.Conv2d(in_channels=16, out_channels=14, kernel_size=3, padding=1)
         self.conv5_normed = nn.BatchNorm2d(14)
         torch_init.xavier_normal_(self.conv5.weight)
 
-        self.conv6 = nn.Conv2d(in_channels=14, out_channels=12, kernel_size=3)
+        self.conv6 = nn.Conv2d(in_channels=14, out_channels=12, kernel_size=3, padding=1)
         self.conv6_normed = nn.BatchNorm2d(12)
         torch_init.xavier_normal_(self.conv6.weight)
 
@@ -110,26 +110,26 @@ class DeepAndSmallCNN(nn.Module):
         # Apply first convolution, followed by ReLU non-linearity;
         # use batch-normalization on its outputs
         # with torch.no_grad():
-        batch = func.relu(self.conv1_normed(self.conv1(batch)))
+        batch = func.prelu(self.conv1_normed(self.conv1(batch)))
 
         # Apply conv2 and conv3 similarly
-        batch = func.relu(self.conv2_normed(self.conv2(batch)))
+        batch = func.prelu(self.conv2_normed(self.conv2(batch)))
 
-        batch = func.relu(self.conv3_normed(self.conv3(batch)))
+        batch = func.prelu(self.conv3_normed(self.conv3(batch)))
 
         # Pass the output of conv3 to the pooling layer
 
-        batch = func.relu(self.conv4_normed(self.conv4(batch)))
+        batch = func.prelu(self.conv4_normed(self.conv4(batch)))
 
-        batch = func.relu(self.conv5_normed(self.conv5(batch)))
+        batch = func.prelu(self.conv5_normed(self.conv5(batch)))
 
-        batch = func.relu(self.conv6_normed(self.conv6(batch)))
+        batch = func.prelu(self.conv6_normed(self.conv6(batch)))
 
         batch = self.pool(batch)
 
-        batch = func.relu(self.conv7_normed(self.conv7(batch)))
+        batch = func.prelu(self.conv7_normed(self.conv7(batch)))
 
-        batch = func.relu(self.conv8_normed(self.conv8(batch)))
+        batch = func.prelu(self.conv8_normed(self.conv8(batch)))
 
         batch = self.pool2(batch)
 
