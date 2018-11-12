@@ -14,7 +14,7 @@ batch_size = 32  # Number of samples in each minibatch
 learning_rate = 0.1
 seed = np.random.seed(42)  # Seed the random number generator for reproducibility
 p_test = 0.1  # Percent of the overall dataset to reserve for testing
-num_folds = 1
+num_folds = 4
 results_dir = './results/kfold-deeptan-subset'
 
 if not os.path.exists(results_dir):
@@ -59,13 +59,14 @@ criterion = torch.nn.BCEWithLogitsLoss(weight=weights.to(computing_device)).to(c
 optimizer = optim.Adam(model.parameters())
 
 for i in range(num_folds):
+    print(i)
     trace_file = results_dir + '/trace-' + str(i)
     val_file = results_dir + '/val-loss-' + str(i)
     val_class_file = results_dir + '/val-class-' + str(i)
     val_agg_file = results_dir + '/val-agg-' + str(i)
     test_file = results_dir + '/test-' + str(i)
-    test_class_file = results_dir + '/test-' + str(i)
-    test_agg_file = results_dir + '/test-' + str(i)
+    test_class_file = results_dir + '/test-class-' + str(i)
+    test_agg_file = results_dir + '/test-agg-' + str(i)
     # Setup the training, validation, and testing dataloaders
     train_loader, val_loader, test_loader = processed_split_loaders(num_folds, i,
                                                                     batch_size,
@@ -154,3 +155,4 @@ for i in range(num_folds):
     torch.save(tconf, test_file + '-test-conf')
     torch.save(best_params, test_file + '-params')
 
+print("Done!")
