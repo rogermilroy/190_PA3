@@ -162,7 +162,7 @@ def test(model, computing_device, loader, criterion):
 
 
 def write_results(f, list_of_results):
-    with open(f) as file:
+    with open(f, 'a+') as file:
         for item in list_of_results:
             file.write(str(item) + ',')
         file.write('\n')
