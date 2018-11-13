@@ -8,11 +8,11 @@ from preprocessed_dataloader import *
 num_epochs = 10  # Number of full passes through the dataset
 early_stop_epochs = 10
 batch_size = 32  # Number of samples in each minibatch
-learning_rate = 0.1
+learning_rate = 0.01
 seed = np.random.seed(42)  # Seed the random number generator for reproducibility
 p_test = 0.1  # Percent of the overall dataset to reserve for testing
 num_folds = 4
-results_dir = './results/kfold-basic-weighted-1'
+results_dir = './results/kfold-basic-full'
 
 if not os.path.exists(results_dir):
     os.makedirs(results_dir)
@@ -47,7 +47,7 @@ samples += total_samples
 
 weights = total_samples / frequencies
 
-criterion = torch.nn.BCELoss(weight=weights.to(computing_device)).to(computing_device)
+criterion = torch.nn.BCELoss().to(computing_device)
 
 
 # Instantiate the gradient descent optimizer - use Adam optimizer with default parameters
