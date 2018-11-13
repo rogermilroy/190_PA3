@@ -46,10 +46,7 @@ samples = torch.zeros_like(frequencies)
 samples += total_samples
 
 weights = total_samples / frequencies
-print(weights)
 
-
-# Use bce with logits for additional numerical stability.
 criterion = torch.nn.BCELoss(weight=weights.to(computing_device)).to(computing_device)
 
 

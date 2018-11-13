@@ -15,7 +15,7 @@ learning_rate = 0.1
 seed = np.random.seed(42)  # Seed the random number generator for reproducibility
 p_test = 0.1  # Percent of the overall dataset to reserve for testing
 num_folds = 4
-results_dir = './results/kfold-deeptan-subset'
+results_dir = './results/kfold-deepsmall-subset'
 
 if not os.path.exists(results_dir):
     os.makedirs(results_dir)
@@ -37,7 +37,7 @@ else:  # Otherwise, train on the CPU
 
 
 # Instantiate a DeepCNN to run on the GPU or CPU based on CUDA support
-model = DeepTanCNN()
+model = DeepAndSmallCNN()
 model = model.to(computing_device)
 print("Model on CUDA?", next(model.parameters()).is_cuda)
 
@@ -49,9 +49,7 @@ samples = torch.zeros_like(frequencies)
 samples += total_samples
 
 weights = total_samples / frequencies
-print(weights)
 
-# Use bce with logits for additional numerical stability.
 criterion = torch.nn.BCELoss(weight=weights.to(computing_device)).to(computing_device)
 
 

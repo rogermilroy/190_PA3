@@ -88,7 +88,7 @@ class DeepAndSmallCNN(nn.Module):
 
         self.pool2 = nn.MaxPool2d(kernel_size=2, stride=2)
 
-        self.fc = nn.Linear(in_features=392, out_features=14)
+        self.fc = nn.Linear(in_features=12800, out_features=14)
         torch_init.xavier_normal_(self.fc.weight)
 
     def forward(self, batch):
@@ -110,26 +110,26 @@ class DeepAndSmallCNN(nn.Module):
         # Apply first convolution, followed by ReLU non-linearity;
         # use batch-normalization on its outputs
         # with torch.no_grad():
-        batch = func.prelu(self.conv1_normed(self.conv1(batch)))
+        batch = func.rrelu(self.conv1_normed(self.conv1(batch)))
 
         # Apply conv2 and conv3 similarly
         batch = func.prelu(self.conv2_normed(self.conv2(batch)))
 
-        batch = func.prelu(self.conv3_normed(self.conv3(batch)))
+        batch = func.rrelu(self.conv3_normed(self.conv3(batch)))
 
         # Pass the output of conv3 to the pooling layer
 
-        batch = func.prelu(self.conv4_normed(self.conv4(batch)))
+        batch = func.rrelu(self.conv4_normed(self.conv4(batch)))
 
-        batch = func.prelu(self.conv5_normed(self.conv5(batch)))
+        batch = func.rrelu(self.conv5_normed(self.conv5(batch)))
 
-        batch = func.prelu(self.conv6_normed(self.conv6(batch)))
+        batch = func.rrelu(self.conv6_normed(self.conv6(batch)))
 
         batch = self.pool(batch)
 
-        batch = func.prelu(self.conv7_normed(self.conv7(batch)))
+        batch = func.rrelu(self.conv7_normed(self.conv7(batch)))
 
-        batch = func.prelu(self.conv8_normed(self.conv8(batch)))
+        batch = func.rrelu(self.conv8_normed(self.conv8(batch)))
 
         batch = self.pool2(batch)
 
