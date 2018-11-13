@@ -167,3 +167,11 @@ def write_results(f, list_of_results):
             file.write(str(item) + ',')
         file.write('\n')
 
+'''
+def read_results(f):
+    items = []
+    with open(f, 'a+') as file:
+        while(item = f.read()):
+            items.append(item)
+    return items
+'''
