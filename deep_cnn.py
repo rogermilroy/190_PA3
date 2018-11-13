@@ -38,7 +38,7 @@ class DeepCNN(nn.Module):
     Consists of three Conv2d layers, followed by one 4x4 max-pooling layer,
     and 2 fully-connected (FC) layers:
 
-    conv1 -> conv2 -> conv3 -> maxpool -> fc1 -> fc2 (outputs)
+    conv1 -> conv2 -> conv3 -> maxpool -> conv4 -> conv5 -> fc1 -> fc2 (outputs)
 
     Make note:
     - Inputs are expected to be grayscale images (how many channels does this imply?)
@@ -57,12 +57,12 @@ class DeepCNN(nn.Module):
         # Initialized weights using the Xavier-Normal method
         torch_init.xavier_normal_(self.conv1.weight)
 
-        # conv2: 24 input channels, 16 output channels, [8x8] kernel
+        # conv2: 12 input channels, 12 output channels, [8x8] kernel
         self.conv2 = nn.Conv2d(in_channels=12, out_channels=12, kernel_size=8)
         self.conv2_normed = nn.BatchNorm2d(12)
         torch_init.xavier_normal_(self.conv2.weight)
 
-        # conv3: X input channels, 8 output channels, [6x6] kernel
+        # conv3: 12 input channels, 10 output channels, [6x6] kernel
         self.conv3 = nn.Conv2d(in_channels=12, out_channels=10, kernel_size=6)
         self.conv3_normed = nn.BatchNorm2d(10)
         torch_init.xavier_normal_(self.conv3.weight)
@@ -70,10 +70,12 @@ class DeepCNN(nn.Module):
         # Apply max-pooling with a [2x2] kernel using tiling
         self.pool = nn.MaxPool2d(kernel_size=2, stride=2)
 
+        # conv4: 10 input channels, 10 output channels, [4x4] kernel
         self.conv4 = nn.Conv2d(in_channels=10, out_channels=10, kernel_size=4)
         self.conv4_normed = nn.BatchNorm2d(10)
         torch_init.xavier_normal_(self.conv4.weight)
 
+        # conv5: 10 input channels, 8 output channels, [4x4] kernel
         self.conv5 = nn.Conv2d(in_channels=10, out_channels=8, kernel_size=4)
         self.conv5_normed = nn.BatchNorm2d(8)
         torch_init.xavier_normal_(self.conv5.weight)

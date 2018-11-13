@@ -38,7 +38,7 @@ class DeepAndSmallCNN(nn.Module):
     Consists of eight Conv2d layers, two max-pooling layers,
     and 1 fully-connected (FC) layer:
 
-    conv1 -> conv2 -> conv3 -> conv4 -> conv5 -> conv6 -> maxpool -> fc1 -> (outputs)
+    conv1 -> conv2 -> conv3 -> conv4 -> conv5 -> conv6 -> maxpool -> conv7 -> conv8 -> maxpool -> fc1 -> (outputs)
 
     """
 
