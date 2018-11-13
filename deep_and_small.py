@@ -113,7 +113,7 @@ class DeepAndSmallCNN(nn.Module):
         batch = func.rrelu(self.conv1_normed(self.conv1(batch)))
 
         # Apply conv2 and conv3 similarly
-        batch = func.prelu(self.conv2_normed(self.conv2(batch)))
+        batch = func.rrelu(self.conv2_normed(self.conv2(batch)))
 
         batch = func.rrelu(self.conv3_normed(self.conv3(batch)))
 
