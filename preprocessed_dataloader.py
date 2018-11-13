@@ -13,7 +13,7 @@ class PreprocessedDataset(Dataset):
 
     def __init__(self, subset, device='cpu'):
         if subset:
-            self.image_dir = str(Path.home()) + "/processed/subset"
+            self.image_dir = str(Path.home()) + "/subset"
         else:
             self.image_dir = str(Path.home()) + "/processed"
         self.device = device
